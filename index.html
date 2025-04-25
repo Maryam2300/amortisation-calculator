@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8">
+    <title>LabLabel Amortisationsrechner</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f2f5;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: auto;
+        color: #1b3966;
+        text-align: center;
+      }
+
+      H1 {
+        font-weight: bold;
+        margin-top: 4px;
+        margin-bottom: 4px;
+      }
+
+      .grid {
+        text-align: left;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+
+      .card {
+        display: grid;
+        grid-template-columns: minmax(auto, 300px) 1fr;
+        background: #fff;
+        padding: 0 10px 10px 10px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        row-gap: 8px;
+        align-items: center;
+      }
+
+      .card h3 {
+        grid-column: 1/3;
+        font-weight: bold;
+      }
+
+      input {
+        padding: 6px 8px;
+        min-width: 60px;
+        text-align: left;
+        font-size: inherit;
+        color: inherit;
+        font-weight: inherit;
+      }
+
+      .card>input {
+        border-radius: 5px;
+        border: 1px solid #ccc;
+      }
+
+      .card>.unit {
+        display: flex;
+        align-items: center;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+      }
+
+      .card>.unit>input {
+        flex-grow: 1;
+        background-color: inherit;
+        border-radius: 5px 0px 0px 5px;
+        border: 0px;
+      }
+
+      .card>.unit>div {
+        padding: 6px 8px;
+        flex-grow: 0;
+        border-left: 1px solid #ccc;
+      }
+
+      .editable {
+        background-color: #fde9e9;
+      }
+
+      .readonly {
+        background-color: #e0e0e0;
+      }
+
+      .highlight-red {
+        background-color: #ff0f03;
+        color: white;
+        font-weight: bold;
+      }
+
+      .highlight-green {
+        background-color: #1ebb1e;
+        color: white;
+        font-weight: bold;
+      }
+
+      .orange-hint {
+        font-size: 13px;
+        color: darkorange;
+        font-style: italic;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <H1>Amortisationsmodell LabLabel</H1>
+      <p class="intro">
+        Nutzen Sie diesen Rechner, um Ihre jährlichen Laborkosten und die Amortisationszeit des LabLabel-Systems bequem
+        zu berechnen.
+      </p>
+      <div class="grid">
+        <div class="card">
+          <h3>Klinikdaten</h3>
+          <label for="C6">Bettenanzahl <span class="orange-hint">Beispiel: 250</span></label>
+          <input type="number" class="editable" value="250" id="C6" min="0">
+          <label for="C7">Belegungsgrad <span class="orange-hint">Beispiel 85%</span></label>
+          <div class="unit editable">
+            <input type="number" class="percent" value="85" id="C7" data-factor="0.01" min="0" max="100">
+            <div>%</div>
+          </div>
+          <label for="C8">Belegte Betten</label>
+          <input type="text" class="readonly" readonly value="213" id="C8" data-fixed="0">
+          <label for="C9">Tägliche Blutentnahmen <span class="orange-hint">Beispiel 3 je Bett</span></label>
+          <input type="number" class="editable" value="3" id="C9" min="0">
+          <label for="C10">Tägliche Blutproben</label>
+          <input type="text" class="readonly" readonly value="638" id="C10" data-fixed="0">
+          <label for="C11">Rückläuferquote <span class="orange-hint">Beispiel 1,5%</span></label>
+          <div class="unit editable">
+            <input type="number" value="1.5" id="C11" data-factor="0.01" step="0.1" min="0" max="100">
+            <div>%</div>
+          </div>
+          <label for="C13">Rückläufer täglich</label>
+          <input type="text" class="readonly" readonly value="10" id="C13" data-fixed="0">
+          <label for="C14">Rückläufer monatlich</label>
+          <input type="text" class="readonly" readonly value="287" id="C14" data-fixed="0">
+          <label for="C15">Rückläufer jährlich</label>
+          <input type="text" class="readonly" readonly value="3443" id="C15" data-fixed="0">
+          <h3>Personalkosten (direkte)</h3>
+          <label for="C18">Abarbeitungszeit Rückläufer (Std.)</label>
+          <div class="unit editable">
+            <input type="number" value="0.5" id="C18" step="0.1" min="0">
+            <div>h</div>
+          </div>
+          <label for="C19">Stunden täglich</label>
+          <div class="unit readonly">
+            <input type="text" readonly value="5" id="C19" data-fixed="0">
+            <div>h</div>
+          </div>
+          <label for="C20">Stunden monatlich</label>
+          <div class="unit readonly">
+            <input type="text" readonly value="143" id="C20" data-fixed="0">
+            <div>h</div>
+          </div>
+          <label for="C21">Stunden jährlich</label>
+          <div class="unit readonly">
+            <input type="text" readonly value="1721" id="C21" data-fixed="0">
+            <div>h</div>
+          </div>
+          <label for="C23">Benötigte MA</label>
+          <input type="text" class="readonly" readonly value="1.08" id="C23" data-fixed="2">
+          <label for="C24">MA-Kosten <span class="orange-hint">Beispiel 43.000 brutto</span></label>
+          <div class="unit editable">
+            <input type="number" value="43000" id="C24" data-fixed="2" min="0">
+            <div>€</div>
+          </div>
+          <label for="C25">Gesamtkosten MA</label>
+          <div class="unit highlight-red">
+            <input type="text" readonly value="46258.59" id="C25" data-fixed="2">
+            <div>€</div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Zusatzkosten (materiell)</h3>
+          <label for="F7">Kosten Blutabnahmeset</label>
+          <div class="unit editable">
+            <input type="number" value="0.72" id="F7" step="0.01" min="0">
+            <div>€</div>
+          </div>
+          <label for="F8">Kosten täglich</label>
+          <div class="unit readonly">
+            <input type="text" readonly value="6.88" id="F8" data-fixed="2">
+            <div>€</div>
+          </div>
+          <label for="F9">Kosten monatlich</label>
+          <div class="unit highlight-red">
+            <input type="text" readonly value="206.55" id="F9" data-fixed="2">
+            <div>€</div>
+          </div>
+          <label for="F10">Kosten jährlich</label>
+          <div class="unit highlight-red">
+            <input type="text" readonly value="2478.60" id="F10" data-fixed="2">
+            <div>€</div>
+          </div>
+          <h3>Gesamtkosten aus Rückläufermanagement</h3>
+          <label for="F13">Kosten jährlich</label>
+          <div class="unit highlight-red">
+            <input type="text" readonly value="48737.19" id="F13" data-fixed="2">
+            <div>€</div>
+          </div>
+          <label for="F15">Investitionskosten LabLabel</label>
+          <div class="unit highlight-green">
+            <input type="text" readonly value="5750.00" id="F15">
+            <div>€</div>
+          </div>
+          <label for="F16">Amortisationsdauer</label>
+          <input type="text" class="highlight-green" readonly value="0.117980" id="F16" data-fixed="6">
+          <h3>Nebenrechnungen</h3>
+          <label for="F19">Bettenzahl</label>
+          <input type="text" class="readonly" readonly value="250" id="F19">
+          <label for="F21">Aufwand Rückläufer Std. p.a.</label>
+          <div class="unit readonly">
+            <input type="text" readonly value="1721" id="F21" data-fixed="0">
+            <div>h</div>
+          </div>
+          <label for="F22">Arbeitsstunden MA</label>
+          <div class="unit editable">
+            <input type="number" value="1600" id="F22" min="0">
+            <div>h</div>
+          </div>
+          <label for="F23">Personalbedarf Rückläufer</label>
+          <input type="text" class="readonly" readonly value="1.08" id="F23" data-fixed="2">
+          <label for="F24">Jahreskosten Personal</label>
+          <div class="unit highlight-green">
+            <input type="text" readonly value="43000.00" id="F24" data-fixed="2">
+            <div>€</div>
+          </div>
+          <label for="F25">Gesamtkosten Zusatzpersonal</label>
+          <div class="unit highlight-green">
+            <input type="text" readonly value="46258.59" id="F25" data-fixed="2">
+            <div>€</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      function calc({ C6, C7, C9, C11, C18, C24, F7, F15, F22 }) {
+        const C8 = C6 * C7;
+        const C10 = C8 * C9;
+        const C13 = C10 * C11;
+        const C14 = C13 * 30;
+        const C15 = C14 * 12;
+        const C19 = C13 * C18;
+        const C20 = C18 * C14;
+        const C21 = C18 * C15;
+        const C23 = C21 / 1600;
+        const C25 = C23 * C24;
+        const F8 = F7 * C13;
+        const F9 = F8 * 30;
+        const F10 = F9 * 12;
+        const F13 = F10 + C25;
+        const F16 = F15 / F13;
+        const F19 = C6;
+        const F21 = C21;
+        const F23 = F21 / F22;
+        const F24 = C24;
+        const F25 = F24 * F23;
+        return { C8, C10, C13, C14, C15, C19, C20, C21, C23, C25, F8, F9, F10, F13, F16, F19, F21, F23, F24, F25 };
+      }
+      function update() {
+        const result = calc(Object.fromEntries(elements.map((e) => [e.id, parseFloat(e.value) * ("factor" in e.dataset ? parseFloat(e.dataset.factor) : 1.0)])));
+        for (const element of elements) {
+          if (element.id in result) {
+            value = result[element.id];
+            if ("fixed" in element.dataset) {
+              const prec = parseFloat(element.dataset.fixed);
+              value = value.toFixed(prec);
+            }
+            element.value = value;
+          }
+        }
+      }
+      let elements = [];
+      function init() {
+        elements = [...document.querySelectorAll("input")];
+        for (const element of elements) {
+          if (!element.readOnly) {
+            element.addEventListener("keyup", update);
+            element.addEventListener("change", update);
+          }
+        }
+      }
+      init();
+    </script>
+  </body>
+</html>
